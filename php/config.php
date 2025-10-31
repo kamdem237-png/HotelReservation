@@ -30,7 +30,9 @@ function sanitize($data) {
 }
 
 // Gestion des sessions
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Fonction de vérification d'authentification
 function isAuthenticated() {

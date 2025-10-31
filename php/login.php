@@ -1,6 +1,6 @@
 <?php
-session_start();
 require_once 'config.php';
+require_once 'header.php';
 
 $error = '';
 
@@ -42,6 +42,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <nav class="navbar">
+        <div class="logo">
+            <h1><a href="../index.html" style="text-decoration: none; color: inherit;">HotelRes</a></h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="../index.html">Accueil</a></li>
+            <li><a href="rooms.php">Chambres</a></li>
+            <li><a href="contact.php">Contact</a></li>
+            <li class="auth-links">
+                <a href="login.php" class="btn-login active">Connexion</a>
+                <a href="register.php" class="btn-register">Inscription</a>
+            </li>
+        </ul>
+    </nav>
     <div class="auth-container">
         <form class="auth-form" method="POST" action="">
             <h2>Connexion</h2>

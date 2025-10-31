@@ -1,6 +1,6 @@
 <?php
-session_start();
 require_once 'config.php';
+require_once 'header.php';
 
 $error = '';
 $success = '';
@@ -52,6 +52,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body>
+    <nav class="navbar">
+        <div class="logo">
+            <h1><a href="../index.html" style="text-decoration: none; color: inherit;">HotelRes</a></h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="../index.html">Accueil</a></li>
+            <li><a href="rooms.php">Chambres</a></li>
+            <li><a href="contact.php">Contact</a></li>
+            <li class="auth-links">
+                <a href="login.php" class="btn-login">Connexion</a>
+                <a href="register.php" class="btn-register active">Inscription</a>
+            </li>
+        </ul>
+    </nav>
     <div class="auth-container">
         <form class="auth-form" method="POST" action="" id="registerForm">
             <h2>Inscription</h2>
