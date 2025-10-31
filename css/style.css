@@ -83,6 +83,7 @@ a {
   padding: 0.5rem 1.5rem;
   border-radius: 5px;
   transition: all 0.3s ease;
+  margin-top: -20px;
 }
 
 .btn-login:hover {
@@ -157,11 +158,12 @@ a {
   padding: 0.5rem 1rem;
   border-radius: 5px;
   transition: background-color 0.3s;
+  margin-top: -20px;
 }
 
 .btn-register:hover {
   background-color: #2980b9;
-  color:#ffffff;
+  color: #ffffff;
 }
 
 /* Hero Section */
@@ -523,7 +525,7 @@ footer {
     height: calc(100vh - var(--nav-height));
     background-color: var(--white);
     flex-direction: column;
-    padding: 2rem;
+    padding: 1rem; /* réduire le padding pour éviter tout débordement horizontal */
     transition: all 0.3s ease;
     align-items: flex-start;
   }
@@ -551,6 +553,21 @@ footer {
   .auth-links {
     flex-direction: column;
     width: 100%;
+    text-align: center; /* centrer le contenu dans le menu mobile */
+    gap: 0.5rem; /* espacement entre les boutons pour qu'ils ne se collent pas */
+    align-items: stretch; /* assurer que les boutons remplissent la largeur disponible sans dépasser */
+  }
+
+  /* Styles spécifiques aux boutons en mode mobile : pleine largeur, centrés et espacés */
+  .auth-links .btn-login,
+  .auth-links .btn-register {
+    display: block;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box; /* inclure padding/border dans la largeur pour éviter le débordement */
+    margin: 0.1rem 0; /* espacement vertical pour qu'ils ne se touchent pas */
+    padding: 0.6rem 1rem; /* ajuster le padding pour un bon rendu sur mobile */
+    max-width: 100%;
   }
 
   .search-box form {
