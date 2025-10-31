@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système de Réservation d'Hôtel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- En-tête -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>HotelRes</h1>
+            </div>
+            <button class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="php/rooms.php">Chambres</a></li>
+                <li><a href="php/reservations.php">Réservations</a></li>
+                <li><a href="php/contact.php">Contact</a></li>
+                <li class="auth-links">
+                    <a href="php/login.php" style="text-decoration: none; text-align:center;"
+                        class="btn-login">Connexion</a>
+                    <a href="php/register.php" style="text-decoration: none; text-align:center; color:#ffffff;"
+                        class="btn-register">Inscription</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Bouton retour en haut -->
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- Section Hero -->
+    <section class="hero fade-in">
+        <div class="hero-content">
+            <h2>Réservez Votre Séjour de Rêve</h2>
+            <p>Découvrez le luxe inégalé du Joyau du Phénix.</p>
+            <form class="reservation-form">
+                <div class="form-group">
+                    <label for="check-in">Arrivée</label>
+                    <input type="date" id="check-in" name="check-in" required>
+                </div>
+                <div class="form-group">
+                    <label for="check-out">Départ</label>
+                    <input type="date" id="check-out" name="check-out" required>
+                </div>
+                <div class="form-group">
+                    <label for="guests">Adultes</label>
+                    <input type="number" id="adults" name="adults" min="1" value="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="children">Enfants</label>
+                    <input type="number" id="children" name="children" min="0" value="0">
+                </div>
+                <button type="submit" class="btn-reserve">Vérifier la Disponibilité</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="description fade-in">
+        <div>
+            <div class="description-image-container">
+                <img src="images/hotel_grand_exterior.jpg"
+                    alt="Façade grandiose et jardin de l'hôtel Le Joyau du Phénix" class="description-image">
+            </div>
+            <div class="description-content">
+                <h2>Le Joyau du Phénix : Votre Sanctuaire Cinq Étoiles</h2>
+                <p>Nichée à l'intersection parfaite entre la sérénité d'un fleuve sinueux et le murmure apaisant de
+                    l'océan, Le Joyau du Phénix n'est pas qu'un hôtel, c'est une destination. Notre établissement cinq
+                    étoiles incarne l'apogée du luxe et de l'exclusivité. Dès votre arrivée, l'**entrée grandiose**,
+                    ornée de marbre immaculé et de colonnades majestueuses, vous plonge dans un monde d'élégance
+                    intemporelle.</p>
+                <p>Flânez dans nos **Jardins Suspendus**, un éden paysager où les espèces exotiques côtoient les
+                    fontaines d'eau douce, offrant un contraste rafraîchissant avec le sable chaud de la plage privée
+                    toute proche. Le **fleuve**, qui borde discrètement la propriété, invite à des croisières privées au
+                    coucher du soleil.</p>
+                <p>Notre application de réservation a été conçue pour vous offrir une expérience aussi fluide et exquise
+                    que votre futur séjour. Parcourez nos suites luxueuses, chacune offrant une vue imprenable, et
+                    personnalisez votre expérience en quelques clics. Au Joyau du Phénix, chaque détail est une promesse
+                    de perfection. Réservez l'inoubliable.</p>
+                <a href="php/rooms.php" class="btn-primary">Découvrir les Suites</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section Services (fusionnée avec 'Features') -->
+    <section class="services">
+        <h2>Nos Services</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fas fa-bed"></i>
+                <h3>Suites de Luxe</h3>
+                <p>Hébergements spacieux et raffinés</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-utensils"></i>
+                <h3>Gastronomie Étoilée</h3>
+                <p>Expérience culinaire d'exception</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-swimmer"></i>
+                <h3>Piscine & Plage</h3>
+                <p>Accès direct à la plage privée</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-spa"></i>
+                <h3>Spa</h3>
+                <p>Espace détente et bien-être</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-wifi"></i>
+                <h3>Wi-Fi Gratuit</h3>
+                <p>Connectivité haut débit dans tout l'hôtel</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-parking"></i>
+                <h3>Parking</h3>
+                <p>Parking sécurisé pour nos clients</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pied de page -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: contact@hotel.com</p>
+                <p>Téléphone: +33 1 23 45 67 89</p>
+                <p>Adresse: 123 Rue de l'Hôtel, 75000 Paris</p>
+            </div>
+            <div class="footer-section">
+                <h3>Liens rapides</h3>
+                <ul>
+                    <li><a href="php/about.php">À propos</a></li>
+                    <li><a href="php/rooms.php">Chambres</a></li>
+                    <li><a href="php/services.php">Services</a></li>
+                    <li><a href="php/contact.php">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Suivez-nous</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 HotelRes. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>
