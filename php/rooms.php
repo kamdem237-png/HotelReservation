@@ -67,8 +67,27 @@ function checkAvailability($pdo, $room_type_id, $check_in, $check_out) {
 // Récupération des dates de recherche depuis l'URL
 $check_in = isset($_GET['check_in']) ? $_GET['check_in'] : '';
 $check_out = isset($_GET['check_out']) ? $_GET['check_out'] : '';
+$guests = isset($_GET['guests']) ? intval($_GET['guests']) : 0;
 $adults = isset($_GET['adults']) ? intval($_GET['adults']) : 1;
 $children = isset($_GET['children']) ? intval($_GET['children']) : 0;
+$room_type = isset($_GET['room_type']) ? $_GET['room_type'] : '';
+
+// Si on a des paramètres de recherche, rediriger vers search_rooms.php pour une meilleure interface
+if ($check_in || $check_out || $guests > 0 || $room_type) {
+    $params = [];
+    if ($check_in) $params[] = 'check_in=' . urlencode($check_in);
+    if ($check_out) $params[] = 'check_out=' . urlencode($check_out);
+    if ($guests > 0) $params[] = 'guests=' . $guests;
+    if ($room_type) $params[] = 'room_type=' . urlencode($room_type);
+    
+    $redirect_url = 'search_rooms.php';
+    if (!empty($params)) {
+        $redirect_url .= '?' . implode('&', $params);
+    }
+    
+    header('Location: ' . $redirect_url);
+    exit;
+}
 
 // Récupération des types de chambres
 $roomTypes = getRoomTypes($pdo);
@@ -80,75 +99,33 @@ if ($check_in && $check_out) {
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nos Chambres - HotelRes</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
-    <!-- En-tête -->
-    <header>
-        <nav class="navbar">
-            <div class="logo">
-                <h1>HotelRes</h1>
-            </div>
-            <button class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <ul class="nav-links">
-                <li><a href="../index.html">Accueil</a></li>
-                <li><a href="rooms.php" class="active">Chambres</a></li>
-                <li><a href="reservations.php">Réservations</a></li>
-                <li><a href="contact.php">Contact</a></li>
-                <?php if(!isset($_SESSION['user_id'])): ?>
-                    <li class="auth-links">
-                        <a href="login.php" class="btn-login">Connexion</a>
-                        <a href="register.php" class="btn-register">Inscription</a>
-                    </li>
-                <?php else: ?>
-                    <li><a href="profile.php">Mon Profil</a></li>
-                    <li><a href="logout.php">Déconnexion</a></li>
-                <?php endif; ?>
-            </ul>
-        </nav>
-    </header>
+    
 
     <!-- Formulaire de recherche -->
     <section class="search-rooms">
         <div class="search-container">
             <h2>Rechercher une chambre</h2>
-            <form class="search-form" action="" method="GET">
+            <form class="search-form" action="search_rooms.php" method="GET">
                 <div class="form-group">
                     <label for="check-in"><i class="fas fa-calendar-alt"></i> Date d'arrivée</label>
-                    <input type="date" id="check-in" name="check_in" value="<?php echo $check_in; ?>" required min="<?php echo date('Y-m-d'); ?>">
+                    <input type="date" id="check-in" name="check_in" required min="<?php echo date('Y-m-d'); ?>">
                 </div>
                 <div class="form-group">
                     <label for="check-out"><i class="fas fa-calendar-alt"></i> Date de départ</label>
-                    <input type="date" id="check-out" name="check_out" value="<?php echo $check_out; ?>" required min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>">
+                    <input type="date" id="check-out" name="check_out" required min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>">
                 </div>
                 <div class="form-group">
-                    <label for="adults"><i class="fas fa-user"></i> Adultes</label>
-                    <input type="number" id="adults" name="adults" min="1" max="6" value="<?php echo $adults; ?>" required>
-                </div>
-                <div class="form-group">
-                    <label for="children"><i class="fas fa-child"></i> Enfants</label>
-                    <input type="number" id="children" name="children" min="0" max="4" value="<?php echo $children; ?>">
+                    <label for="guests"><i class="fas fa-users"></i> Personnes</label>
+                    <input type="number" id="guests" name="guests" min="1" max="10" value="2" required>
                 </div>
                 <div class="form-group">
                     <label for="room_type"><i class="fas fa-bed"></i> Type de chambre</label>
                     <select id="room_type" name="room_type">
                         <option value="">Tous les types</option>
-                        <option value="simple">Chambre Simple</option>
-                        <option value="double">Chambre Double</option>
-                        <option value="familiale">Chambre Familiale</option>
-                        <option value="suite">Suite Junior</option>
-                        <option value="presidentielle">Suite Présidentielle</option>
+                        <option value="simple">Simple</option>
+                        <option value="double">Double</option>
+                        <option value="suite">Suite</option>
+                        <option value="deluxe">Deluxe</option>
                     </select>
                 </div>
                 <button type="submit" class="btn-search"><i class="fas fa-search"></i> Rechercher</button>
@@ -173,7 +150,7 @@ if ($check_in && $check_out) {
                         <div class="room-header">
                             <h3><?php echo htmlspecialchars($room['name']); ?></h3>
                             <div class="room-price">
-                                <span class="price-amount"><?php echo number_format($room['price_per_night'], 2); ?> €</span>
+                                <span class="price-amount"><?php echo formatPriceFCFA($room['price_per_night'], true); ?></span>
                                 <span class="price-period">/ nuit</span>
                             </div>
                         </div>
@@ -234,39 +211,9 @@ if ($check_in && $check_out) {
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Contact</h3>
-                <p>Email: contact@hotel.com</p>
-                <p>Téléphone: +33 1 23 45 67 89</p>
-                <p>Adresse: 123 Rue de l'Hôtel, 75000 Paris</p>
-            </div>
-            <div class="footer-section">
-                <h3>Liens rapides</h3>
-                <ul>
-                    <li><a href="../index.html">Accueil</a></li>
-                    <li><a href="rooms.php">Chambres</a></li>
-                    <li><a href="about.php">À propos</a></li>
-                    <li><a href="contact.php">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Suivez-nous</h3>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 HotelRes. Tous droits réservés.</p>
-        </div>
-    </footer>
+    <?php require_once 'footer.php'; ?>
 
     <script src="../js/validation.js"></script>
     <script src="../js/rooms.js"></script>
-</body>
-</html>
+    </body>
+    </html>

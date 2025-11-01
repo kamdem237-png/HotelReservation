@@ -11,7 +11,8 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $userId = $_SESSION['user_id'];
-$message = '';
+$message = $_SESSION['success_message'] ?? '';
+unset($_SESSION['success_message']);
 
 // Annulation d'une réservation
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'cancel' && isset($_POST['reservation_id'])) {
@@ -46,25 +47,6 @@ $stmt = $pdo->prepare("SELECT r.*, rm.room_number, rt.name as room_type_name
 $stmt->execute([$userId]);
 $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mes réservations - HotelRes</title>
-    <link rel="stylesheet" href="../css/style.css">
-</head>
-<body>
-    <header style="padding:0 1rem;">
-        <nav class="navbar">
-            <div class="logo"><h1>HotelRes</h1></div>
-            <ul class="nav-links">
-                <li><a href="../index.html">Accueil</a></li>
-                <li><a href="rooms.php">Chambres</a></li>
-                <li><a href="reservations.php" class="active">Mes réservations</a></li>
-            </ul>
-        </nav>
-    </header>
 
     <main style="padding:2rem;">
         <div style="max-width:1000px;margin:0 auto;">
@@ -81,7 +63,7 @@ $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="room-info">
                             <h3><?php echo htmlspecialchars($res['room_type_name'] ?: 'Chambre'); ?> — <?php echo htmlspecialchars($res['room_number'] ?: 'N/A'); ?></h3>
                             <p>Du <strong><?php echo htmlspecialchars($res['check_in_date']); ?></strong> au <strong><?php echo htmlspecialchars($res['check_out_date']); ?></strong></p>
-                            <p>Prix total : <strong><?php echo number_format($res['total_price'], 2); ?> €</strong></p>
+                            <p>Prix total : <strong><?php echo formatPriceFCFA($res['total_price'], true); ?></strong></p>
                             <p>Statut : <span class="availability <?php echo $res['status'] === 'cancelled' ? 'unavailable' : 'available'; ?>"><?php echo htmlspecialchars($res['status']); ?></span></p>
 
                             <?php if ($res['status'] !== 'cancelled' && strtotime($res['check_in_date']) > strtotime(date('Y-m-d'))): ?>
@@ -97,5 +79,13 @@ $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endif; ?>
         </div>
     </main>
-</body>
-</html>
+    
+    <link rel="stylesheet" href="../css/modal.css">
+    <script src="../js/modal.js"></script>
+    <script>
+        <?php if ($message): ?>
+        showSuccess('<?php echo addslashes($message); ?>');
+        <?php endif; ?>
+    </script>
+    </body>
+    </html>

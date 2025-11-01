@@ -3,9 +3,6 @@ require_once 'config.php';
 require_once 'header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="fr">
-<body>
     <main class="container">
         <section class="about-section">
             <h1>À propos de HotelRes</h1>
@@ -81,7 +78,3 @@ require_once 'header.php';
             </div>
         </section>
     </main>
-
-    <script src="../js/nav.js"></script>
-</body>
-</html>

@@ -30,7 +30,7 @@
                 <li class="auth-links">
                     <a href="php/login.php" style="text-decoration: none; text-align:center;"
                         class="btn-login">Connexion</a>
-                    <a href="php/register.php" style="text-decoration: none; text-align:center; color:#ffffff;"
+                    <a href="php/register.php" style="text-decoration: none; text-align:center;"
                         class="btn-register">Inscription</a>
                 </li>
             </ul>
@@ -47,24 +47,30 @@
         <div class="hero-content">
             <h2>Réservez Votre Séjour de Rêve</h2>
             <p>Découvrez le luxe inégalé du Joyau du Phénix.</p>
-            <form class="reservation-form">
+            <form class="reservation-form" action="php/search_rooms.php" method="GET">
                 <div class="form-group">
-                    <label for="check-in">Arrivée</label>
-                    <input type="date" id="check-in" name="check-in" required>
+                    <label for="check-in"><i class="fas fa-calendar-alt"></i> Arrivée</label>
+                    <input type="date" id="check-in" name="check_in" required>
                 </div>
                 <div class="form-group">
-                    <label for="check-out">Départ</label>
-                    <input type="date" id="check-out" name="check-out" required>
+                    <label for="check-out"><i class="fas fa-calendar-alt"></i> Départ</label>
+                    <input type="date" id="check-out" name="check_out" required>
                 </div>
                 <div class="form-group">
-                    <label for="guests">Adultes</label>
+                    <label for="guests"><i class="fas fa-user"></i> Adultes</label>
                     <input type="number" id="adults" name="adults" min="1" value="1" required>
                 </div>
                 <div class="form-group">
-                    <label for="children">Enfants</label>
-                    <input type="number" id="children" name="children" min="0" value="0">
+                    <label for="room_type"><i class="fas fa-bed"></i> Type de chambre</label>
+                    <select id="room_type" name="room_type">
+                        <option value="">Tous types</option>
+                        <option value="simple">Simple</option>
+                        <option value="double">Double</option>
+                        <option value="suite">Suite</option>
+                        <option value="deluxe">Deluxe</option>
+                    </select>
                 </div>
-                <button type="submit" class="btn-reserve">Vérifier la Disponibilité</button>
+                <button type="submit" class="btn-reserve"><i class="fas fa-search"></i> Vérifier la Disponibilité</button>
             </form>
         </div>
     </section>
@@ -132,39 +138,74 @@
         </div>
     </section>
 
-    <!-- Pied de page -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Contact</h3>
-                <p>Email: contact@hotel.com</p>
-                <p>Téléphone: +33 1 23 45 67 89</p>
-                <p>Adresse: 123 Rue de l'Hôtel, 75000 Paris</p>
-            </div>
-            <div class="footer-section">
-                <h3>Liens rapides</h3>
-                <ul>
-                    <li><a href="php/about.php">À propos</a></li>
-                    <li><a href="php/rooms.php">Chambres</a></li>
-                    <li><a href="php/services.php">Services</a></li>
-                    <li><a href="php/contact.php">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Suivez-nous</h3>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
+    <!-- Footer -->
+    <footer style="background: #333; color: white; padding: 3rem 0; margin-top: 4rem;">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 1rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                <div>
+                    <h3 style="margin-bottom: 1rem; color: #fff;"><i class="fas fa-hotel"></i> HotelRes</h3>
+                    <p style="margin: 0.5rem 0; line-height: 1.6;">Votre destination de luxe pour un séjour inoubliable. Réservez dès maintenant et profitez d'une expérience exceptionnelle.</p>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 1rem; color: #fff;"><i class="fas fa-phone"></i> Contact</h3>
+                    <p style="margin: 0.5rem 0;"><i class="fas fa-envelope"></i> Email: contact@hotel.com</p>
+                    <p style="margin: 0.5rem 0;"><i class="fas fa-phone"></i> Téléphone: +237 6XX XXX XXX</p>
+                    <p style="margin: 0.5rem 0;"><i class="fas fa-map-marker-alt"></i> Adresse: Yaoundé, Cameroun</p>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 1rem; color: #fff;"><i class="fas fa-link"></i> Liens rapides</h3>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin: 0.5rem 0;"><a href="index.html" style="color: white; text-decoration: none;"><i class="fas fa-home"></i> Accueil</a></li>
+                        <li style="margin: 0.5rem 0;"><a href="php/rooms.php" style="color: white; text-decoration: none;"><i class="fas fa-bed"></i> Chambres</a></li>
+                        <li style="margin: 0.5rem 0;"><a href="php/search_rooms.php" style="color: white; text-decoration: none;"><i class="fas fa-search"></i> Recherche</a></li>
+                        <li style="margin: 0.5rem 0;"><a href="php/contact.php" style="color: white; text-decoration: none;"><i class="fas fa-envelope"></i> Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 1rem; color: #fff;"><i class="fas fa-share-alt"></i> Suivez-nous</h3>
+                    <div style="display: flex; gap: 1rem; font-size: 1.5rem;">
+                        <a href="#" style="color: white;" title="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" style="color: white;" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" style="color: white;" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" style="color: white;" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                    <div style="margin-top: 1.5rem;">
+                        <p style="margin: 0.5rem 0;"><i class="fas fa-clock"></i> Disponible 24/7</p>
+                        <p style="margin: 0.5rem 0;"><i class="fas fa-shield-alt"></i> Paiement sécurisé</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 HotelRes. Tous droits réservés.</p>
+            <div style="text-align: center; padding-top: 2rem; border-top: 1px solid #555;">
+                <p style="margin: 0;">&copy; <script>document.write(new Date().getFullYear())</script> HotelRes. Tous droits réservés. | Développé avec <i class="fas fa-heart" style="color: #e74c3c;"></i></p>
+            </div>
         </div>
     </footer>
 
     <script src="js/main.js"></script>
+    <script>
+        // Gérer les dates du formulaire de recherche
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkInInput = document.getElementById('check-in');
+            const checkOutInput = document.getElementById('check-out');
+            
+            // Définir la date minimale à aujourd'hui
+            const today = new Date().toISOString().split('T')[0];
+            checkInInput.min = today;
+            checkOutInput.min = today;
+            
+            // Quand la date d'arrivée change, mettre à jour la date minimale de départ
+            checkInInput.addEventListener('change', function() {
+                const checkInDate = new Date(this.value);
+                checkInDate.setDate(checkInDate.getDate() + 1);
+                checkOutInput.min = checkInDate.toISOString().split('T')[0];
+                
+                // Si la date de départ est avant la nouvelle date minimale, la réinitialiser
+                if (checkOutInput.value && new Date(checkOutInput.value) <= new Date(this.value)) {
+                    checkOutInput.value = checkInDate.toISOString().split('T')[0];
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

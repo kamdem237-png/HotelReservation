@@ -5,68 +5,84 @@ require_once 'header.php';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = sanitize($_POST['email']);
-    $password = $_POST['password'];
-
-    if (empty($email) || empty($password)) {
-        $error = "Tous les champs sont requis.";
+    // Vérification CSRF
+    if (ENABLE_CSRF_PROTECTION && !Security::validateCSRFToken($_POST['csrf_token'] ?? '')) {
+        $error = "Jeton de sécurité invalide. Veuillez réessayer.";
+    } 
+    // Rate Limiting
+    elseif (ENABLE_RATE_LIMITING && !Security::checkRateLimit('login_' . ($_POST['email'] ?? 'unknown'), MAX_LOGIN_ATTEMPTS, RATE_LIMIT_WINDOW)) {
+        $error = "Trop de tentatives de connexion. Veuillez réessayer dans quelques minutes.";
+        Security::logSecurityEvent('LOGIN_RATE_LIMIT', $_SERVER['REMOTE_ADDR'], ['email' => $_POST['email'] ?? '']);
     } else {
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
+        $email = sanitize($_POST['email'], 'email');
+        $password = $_POST['password'];
 
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role'];
-            
-            if ($user['role'] === 'admin') {
-                header('Location: /HotelReservation/admin/dashboard.php');
-            } else {
-                header('Location: /HotelReservation/index.php');
-            }
-            exit();
+        if (empty($email) || empty($password)) {
+            $error = "Tous les champs sont requis.";
+        } 
+        // Validation email
+        elseif (!Security::validateEmail($email)) {
+            $error = "Adresse email invalide.";
         } else {
-            $error = "Email ou mot de passe incorrect.";
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+            $stmt->execute([$email]);
+            $user = $stmt->fetch();
+
+            if ($user && password_verify($password, $user['password'])) {
+                // Régénérer l'ID de session pour éviter le hijacking
+                session_regenerate_id(true);
+                
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['user_ip'] = $_SERVER['REMOTE_ADDR'];
+                $_SESSION['initiated'] = true;
+                
+                // Log de connexion réussie
+                Security::logSecurityEvent('LOGIN_SUCCESS', $_SERVER['REMOTE_ADDR'], [
+                    'user_id' => $user['id'],
+                    'username' => $user['username']
+                ]);
+                
+                // Vérifier s'il y a une intention de réservation
+                if (isset($_SESSION['booking_intent'])) {
+                    $intent = $_SESSION['booking_intent'];
+                    
+                    // Rediriger vers la création de réservation
+                    $url = sprintf(
+                        'create_booking.php?room_type_id=%d&check_in=%s&check_out=%s&guests=%d',
+                        $intent['room_type_id'],
+                        urlencode($intent['check_in']),
+                        urlencode($intent['check_out']),
+                        $intent['guests']
+                    );
+                    header('Location: ' . $url);
+                    exit();
+                }
+                
+                // Redirection normale selon le rôle
+                if ($user['role'] === 'admin') {
+                    header('Location: /HotelReservation/admin/dashboard.php');
+                } else {
+                    header('Location: /HotelReservation/index.html');
+                }
+                exit();
+            } else {
+                $error = "Email ou mot de passe incorrect.";
+                Security::logSecurityEvent('LOGIN_FAILED', $_SERVER['REMOTE_ADDR'], ['email' => $email]);
+            }
         }
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion - HotelRes</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
-    <nav class="navbar">
-        <div class="logo">
-            <h1><a href="../index.html" style="text-decoration: none; color: inherit;">HotelRes</a></h1>
-        </div>
-        <button class="hamburger">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <ul class="nav-links">
-            <li><a href="../index.html">Accueil</a></li>
-            <li><a href="rooms.php">Chambres</a></li>
-            <li><a href="contact.php">Contact</a></li>
-            <li class="auth-links">
-                <a href="login.php" class="btn-login active">Connexion</a>
-                <a href="register.php" class="btn-register">Inscription</a>
-            </li>
-        </ul>
-    </nav>
+
+    <link rel="stylesheet" href="../css/modal.css">
+    
     <div class="auth-container">
         <form class="auth-form" method="POST" action="">
             <h2>Connexion</h2>
-            <?php if ($error): ?>
-                <div class="error-message"><?php echo $error; ?></div>
-            <?php endif; ?>
+            
+            <?php echo Security::csrfField(); ?>
             
             <div class="form-group">
                 <label for="email"><i class="fas fa-envelope"></i> Email</label>
@@ -87,6 +103,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 
     <script src="../js/validation.js"></script>
-    <script src="../js/nav.js"></script>
+    <script src="../js/modal.js"></script>
+    <script>
+        <?php if ($error): ?>
+        Modal.error('Erreur de connexion', '<?php echo addslashes($error); ?>');
+        <?php endif; ?>
+    </script>
 </body>
 </html>

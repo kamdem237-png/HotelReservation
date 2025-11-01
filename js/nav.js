@@ -1,11 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Éléments du menu
+    const navbar = document.querySelector('.navbar');
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
-    const navbar = document.querySelector('.navbar');
+    const backToTop = document.querySelector('.back-to-top');
 
     // Fonction pour basculer le menu
     function toggleMenu() {
+        if (!hamburger || !navLinks) return;
         hamburger.classList.toggle('active');
         navLinks.classList.toggle('active');
     }
@@ -18,56 +20,48 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fermer le menu lors d'un clic sur un lien
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            navLinks.classList.remove('active');
+            if (window.innerWidth <= 768) {
+                if (navLinks) navLinks.classList.remove('active');
+                if (hamburger) hamburger.classList.remove('active');
+            }
         });
     });
 
     // Fermer le menu lors d'un clic en dehors
     document.addEventListener('click', (e) => {
-        if (!navbar.contains(e.target) && navLinks.classList.contains('active')) {
+        if (navbar && navLinks && !navbar.contains(e.target) && navLinks.classList.contains('active')) {
             toggleMenu();
         }
     });
 
     // Cacher/Montrer la navbar au scroll
     let lastScroll = 0;
-    const scrollThreshold = 10;
+    const scrollThreshold = 200;
 
     window.addEventListener('scroll', () => {
+        if (!navbar) return;
         const currentScroll = window.pageYOffset;
-        
-        if (currentScroll <= 0) {
-            navbar.classList.remove('hidden');
-            return;
-        }
 
-        if (Math.abs(currentScroll - lastScroll) < scrollThreshold) {
-            return;
-        }
-        
-        if (currentScroll > lastScroll && !navbar.classList.contains('hidden')) {
-            // Scroll vers le bas
+        // Gestion de la navbar (même logique que index)
+        if (currentScroll > lastScroll && currentScroll > scrollThreshold) {
             navbar.classList.add('hidden');
-        } else if (currentScroll < lastScroll && navbar.classList.contains('hidden')) {
-            // Scroll vers le haut
+        } else {
             navbar.classList.remove('hidden');
         }
-        
         lastScroll = currentScroll;
-    });
 
-    // Gestion du bouton "Retour en haut"
-    const backToTop = document.querySelector('.back-to-top');
-    if (backToTop) {
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
+        // Gestion du bouton back-to-top (même seuil que index)
+        if (backToTop) {
+            if (currentScroll > scrollThreshold) {
                 backToTop.classList.add('visible');
             } else {
                 backToTop.classList.remove('visible');
             }
-        });
+        }
+    });
 
+    // Gestion du bouton "Retour en haut"
+    if (backToTop) {
         backToTop.addEventListener('click', () => {
             window.scrollTo({
                 top: 0,

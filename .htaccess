@@ -1,0 +1,137 @@
+# ========================================
+# WAF - Web Application Firewall
+# Protection contre les attaques courantes
+# ========================================
+
+# Activer le RewriteEngine
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /HotelReservation/
+
+    # Bloquer uniquement les User-Agents vraiment suspects (version assouplie)
+    RewriteCond %{HTTP_USER_AGENT} (libwww|wget|python|nikto|scan|winhttp|clshttp|loader) [NC]
+    RewriteRule ^(.*)$ - [F,L]
+
+    # Bloquer les tentatives d'injection SQL évidentes dans l'URL
+    RewriteCond %{QUERY_STRING} (union.*select.*from|insert.*into.*values|delete.*from.*where) [NC]
+    RewriteRule ^(.*)$ - [F,L]
+
+    # Bloquer les tentatives XSS évidentes
+    RewriteCond %{QUERY_STRING} (<script.*>|<iframe.*>|javascript:.*alert) [NC]
+    RewriteRule ^(.*)$ - [F,L]
+
+    # Bloquer l'accès direct aux fichiers de configuration (mais pas leur inclusion PHP)
+    # RewriteRule ^php/(config|Security)\.php$ - [F,L]
+
+    # Protection contre le Directory Listing
+    Options -Indexes
+
+    # Redirection HTTPS (décommenter en production avec SSL)
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# ========================================
+# Headers de sécurité
+# ========================================
+<IfModule mod_headers.c>
+    # Protection XSS
+    Header set X-XSS-Protection "1; mode=block"
+    
+    # Empêcher le sniffing MIME
+    Header set X-Content-Type-Options "nosniff"
+    
+    # Protection Clickjacking
+    Header set X-Frame-Options "DENY"
+    
+    # Politique de référent
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Content Security Policy
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com;"
+    
+    # Permissions Policy
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    
+    # Strict Transport Security (décommenter avec HTTPS)
+    # Header set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+</IfModule>
+
+# ========================================
+# Protection des fichiers sensibles
+# ========================================
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|sql|conf|bak|config)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Protection du fichier config.php (désactivé - empêche les includes PHP)
+# <Files "config.php">
+#     Order Allow,Deny
+#     Deny from all
+# </Files>
+
+# ========================================
+# Limitation de la taille des requêtes
+# ========================================
+<IfModule mod_security.c>
+    # Limite de 10MB pour les uploads
+    SecRequestBodyLimit 10485760
+    SecRequestBodyInMemoryLimit 131072
+</IfModule>
+
+# ========================================
+# Désactiver l'exécution de PHP dans les dossiers uploads (désactivé globalement)
+# À activer uniquement dans le dossier uploads/ avec un .htaccess local
+# ========================================
+# <IfModule mod_php7.c>
+#     php_flag engine off
+# </IfModule>
+
+# ========================================
+# Cache et performances
+# ========================================
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/font-woff "access plus 1 year"
+    ExpiresByType application/font-woff2 "access plus 1 year"
+</IfModule>
+
+# ========================================
+# Protection contre les attaques brute force
+# ========================================
+# Limite de 100 requêtes par IP toutes les 10 secondes
+<IfModule mod_evasive20.c>
+    DOSHashTableSize 3097
+    DOSPageCount 20
+    DOSSiteCount 50
+    DOSPageInterval 1
+    DOSSiteInterval 1
+    DOSBlockingPeriod 10
+</IfModule>
+
+# ========================================
+# Désactiver la signature du serveur
+# ========================================
+ServerSignature Off
+
+# ========================================
+# Encodage par défaut
+# ========================================
+AddDefaultCharset UTF-8
+
+# ========================================
+# Bloquer l'accès direct aux fichiers PHP sensibles (désactivé - empêche includes)
+# ========================================
+# <FilesMatch "^(Security|config)\.php$">
+#     Order Allow,Deny
+#     Allow from 127.0.0.1
+#     Deny from all
+# </FilesMatch>

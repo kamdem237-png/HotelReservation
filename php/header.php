@@ -42,13 +42,11 @@ if (session_status() === PHP_SESSION_NONE) {
                 </li>
                 <li class="auth-links">
                     <?php if(isset($_SESSION['user_id'])): ?>
-                    <a href="profile.php" style="text-decoration: none;" class=" btn-login">Mon Profil</a>
-                    <a href="logout.php" style="text-decoration: none;" class=" btn-register">Déconnexion</a>
+                    <a href="profile.php" class="btn-login">Mon Profil</a>
+                    <a href="logout.php" class="btn-register">Déconnexion</a>
                     <?php else: ?>
-                    <a href="login.php" style="text-decoration: none;" class=" btn-login
-                        <?php echo basename($_SERVER['PHP_SELF']) == 'login.php' ? 'active' : ''; ?>">Connexion</a>
-                    <a href="register.php" style="text-decoration: none;"
-                        class="btn-register <?php echo basename($_SERVER['PHP_SELF']) == 'register.php' ? 'active' : ''; ?>">Inscription</a>
+                    <a href="login.php" class="btn-login <?php echo basename($_SERVER['PHP_SELF']) == 'login.php' ? 'active' : ''; ?>">Connexion</a>
+                    <a href="register.php" class="btn-register <?php echo basename($_SERVER['PHP_SELF']) == 'register.php' ? 'active' : ''; ?>">Inscription</a>
                     <?php endif; ?>
                 </li>
             </ul>
