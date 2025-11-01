@@ -84,23 +84,27 @@ a {
   border-radius: 5px;
   transition: all 0.3s ease;
   margin-top: -20px;
+  text-decoration: none !important;
 }
 
 .btn-login:hover {
     background-color: var(--primary-color);
     color: var(--white);
+    text-decoration: none;
 }
 
 /* Style pour le lien actif dans la barre de navigation */
 .nav-links li a.active.btn-login {
     background-color: var(--primary-color);
     color: var(--white);
+    text-decoration: none;
 }
 
 .nav-links li a.active.btn-register {
-    background-color: var(--white);
-    color: var(--primary-color);
+    background-color: var(--primary-color);
+    color: var(--white);
     border: 2px solid var(--primary-color);
+    text-decoration: none;
 }
 
 .navbar.hidden {
@@ -113,6 +117,7 @@ a {
   background: none;
   border: none;
   padding: 0.5rem;
+  z-index: 1000;
 }
 
 .hamburger span {
@@ -122,6 +127,18 @@ a {
   background-color: var(--primary-color);
   margin: 5px 0;
   transition: all 0.3s ease;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
 }
 
 .back-to-top {
@@ -171,11 +188,13 @@ a {
   border-radius: 5px;
   transition: background-color 0.3s;
   margin-top: -20px;
+  text-decoration: none !important;
 }
 
 .btn-register:hover {
   background-color: #2980b9;
-  color: #ffffff;
+  color: var(--white);
+  text-decoration: none;
 }
 
 /* Hero Section */
@@ -792,13 +811,20 @@ footer {
     height: calc(100vh - var(--nav-height));
     background-color: var(--white);
     flex-direction: column;
-    padding: 1rem; /* réduire le padding pour éviter tout débordement horizontal */
+    padding: 1rem;
     transition: all 0.3s ease;
     align-items: flex-start;
+    z-index: 999;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
   }
 
   .nav-links.active {
     left: 0;
+    opacity: 1;
+    visibility: visible;
   }
 
   .nav-links li {

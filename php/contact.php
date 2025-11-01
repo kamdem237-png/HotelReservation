@@ -32,21 +32,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!DOCTYPE html>
 <html lang="fr">
+
 <body>
     <main class="container">
         <section class="contact-section">
             <h1>Contactez-nous</h1>
-            
+
             <?php if ($message): ?>
-                <div class="alert success">
-                    <?php echo $message; ?>
-                </div>
+            <div class="alert success">
+                <?php echo $message; ?>
+            </div>
             <?php endif; ?>
-            
+
             <?php if ($error): ?>
-                <div class="alert error">
-                    <?php echo $error; ?>
-                </div>
+            <div class="alert error">
+                <?php echo $error; ?>
+            </div>
             <?php endif; ?>
 
             <div class="contact-container">
@@ -77,24 +78,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <form class="contact-form" method="POST" action="">
                     <div class="form-group">
                         <label for="name">Nom complet</label>
-                        <input type="text" id="name" name="name" required value="<?php echo isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''; ?>">
+                        <input type="text" id="name" name="name" required
+                            value="<?php echo isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''; ?>">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
+                        <input type="email" id="email" name="email" required
+                            value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="subject">Sujet</label>
-                        <input type="text" id="subject" name="subject" required value="<?php echo isset($_POST['subject']) ? htmlspecialchars($_POST['subject']) : ''; ?>">
+                        <input type="text" id="subject" name="subject" required
+                            value="<?php echo isset($_POST['subject']) ? htmlspecialchars($_POST['subject']) : ''; ?>">
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="message">Message</label>
-                        <textarea id="message" name="message" rows="5" required><?php echo isset($_POST['message']) ? htmlspecialchars($_POST['message']) : ''; ?></textarea>
+                        <textarea id="message" name="message" rows="5"
+                            required><?php echo isset($_POST['message']) ? htmlspecialchars($_POST['message']) : ''; ?></textarea>
                     </div>
-                    
+
                     <button type="submit" class="btn-primary">Envoyer le message</button>
                 </form>
             </div>
@@ -103,4 +108,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <script src="../js/nav.js"></script>
 </body>
+
 </html>

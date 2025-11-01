@@ -46,6 +46,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="logo">
             <h1><a href="../index.html" style="text-decoration: none; color: inherit;">HotelRes</a></h1>
         </div>
+        <button class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
         <ul class="nav-links">
             <li><a href="../index.html">Accueil</a></li>
             <li><a href="rooms.php">Chambres</a></li>
@@ -82,5 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 
     <script src="../js/validation.js"></script>
+    <script src="../js/nav.js"></script>
 </body>
 </html>
